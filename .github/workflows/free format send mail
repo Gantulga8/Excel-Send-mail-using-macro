@@ -1,0 +1,30 @@
+Sub freeformat_sendmail()
+
+    Sheets("user_add").Select
+    Range("J1048576").Select
+    Selection.End(xlUp).Select
+    L_ln = Selection.Row
+
+    If L_ln < 2 Then Exit Sub
+
+    For i = 2 To L_ln
+        send_str = Cells(i, 19).Value
+  
+        send_str = Replace(send_str, vbLf, "%0d%0a")
+    
+        tbPath = "C:\Program Files (x86)\Mozilla Thunderbird\thunderbird.exe"
+        tbPath = """" & tbPath & """ -compose """
+        
+        mailSubject = Sheets("使い方").Cells(33, 2).Value
+        
+        
+        send_to = Cells(i, 10)
+    
+        Shell tbPath & _
+            "to=" & send_to & "," & _
+            "cc=a1s@ctc-g.co.jp" & "," & _
+            "subject=""" & mailSubject & """," & _
+            "body=""" & send_str & """"
+
+    Next i
+End Sub
