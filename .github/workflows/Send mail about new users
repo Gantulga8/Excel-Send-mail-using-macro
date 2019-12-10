@@ -1,0 +1,72 @@
+
+Sub sendmail()
+ 
+    Sheets("user_add").Select
+    Range("J1048576").Select
+    Selection.End(xlUp).Select
+    L_ln = Selection.Row
+
+    If L_ln < 2 Then Exit Sub
+
+    For i = 2 To L_ln
+        send_str = Cells(i, 12) & vbNewLine & Cells(i, 6) & "さん" & vbNewLine
+        
+    
+        send_str = send_str & vbNewLine & _
+        "helloo message starts from here " & U_Name & "。" & vbNewLine & _
+        "message" & Cells(i, 6) & "mail、" & vbNewLine & _
+        "space and something｡ " & vbNewLine & vbNewLine
+    
+        send_str = send_str & "login ID：" & Cells(i, 3) & vbNewLine
+        send_str = send_str & "new password：" & Cells(i, 5) & vbNewLine
+        
+        
+        send_str = send_str & vbNewLine & "Web Portal URL : https://company.com/password_reset" & vbNewLine
+        
+        send_str = send_str & vbNewLine & _
+        "please change your password。" & vbNewLine & vbNewLine & _
+        "【we're sending ______】" & vbNewLine & _
+        "・click the password reset button" & vbNewLine & _
+        "・..... text" & vbNewLine & _
+        "・here you can edit whatever you want" & vbNewLine & vbNewLine & _
+        "Thank you, best regards" & vbNewLine
+  
+  
+  
+        send_str = Replace(send_str, vbNewLine, "%0d%0a")
+    
+    
+        tbPath = "C:\Program Files (x86)\Mozilla Thunderbird\thunderbird.exe"
+        tbPath = """" & tbPath & """ -compose """
+        mailSubject = "Mail Subject here -> we are contacting about webportal account"
+        send_to = Cells(i, 10)
+    
+        Shell tbPath & _
+            "to=" & send_to & "," & _
+            "cc=a1s@ctc-g.co.jp" & "," & _
+            "subject=""" & mailSubject & """," & _
+            "body=""" & send_str & """"
+
+    Next i
+End Sub
+
+
+Function U_Name() As Variant
+    
+    Dim objSysInfo As Object
+    Dim objUser As Object
+    
+    On Error Resume Next
+    
+    Set objSysInfo = CreateObject("ADSystemInfo")
+    Set objUser = GetObject("LDAP://" & objSysInfo.UserName)
+    
+    If (Err.Number = 0) Then
+        tmp = objUser.DisplayName
+        U_Name = Right(tmp, InStr(tmp, "　") - 1)
+    Else
+        U_Name = " "
+    End If
+    
+    
+End Function
